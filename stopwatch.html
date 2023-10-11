@@ -1,0 +1,141 @@
+<!DOCTYPE>
+<html lang="ja">
+<head>
+  <meta charset="uf-8">
+  <title>StopWatch</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="container">
+    <div id="timer">00:00.000</div>
+    <div class="controls">
+      <div id="start" class="btn">Start</div>
+      <div id="stop" class="btn">Stop</div>
+      <div id="reset" class="btn">Reset</div>
+    </div>
+  </div>
+  <script>
+  {
+  const timer = document.getElementById('timer');
+  const start = document.getElementById('start');
+  const stop = document.getElementById('stop');
+  const reset = document.getElementById('reset');
+
+  let startTime;      
+  let timeoutid;       
+  let elapsedTime = 0; 
+  function countUp() {
+    const d = new Date(Date.now() - startTime + elapsedTime);
+    
+    const m = String(d.getMinutes()).padStart(2, '0');
+    const s = String(d.getSeconds()).padStart(2, '0');
+    const ms = String(d.getMilliseconds()).padStart(2, '0');
+    
+    timer.textContent = `${m}:${s}.${ms}`;
+
+    timeoutid = setTimeout(() => {
+      
+      countUp();
+    }, 10);
+  }
+
+  
+  function setButtonStateInitial() {
+    start.classList.remove('inactive'); 
+    stop.classList.add('inactive');     
+    reset.classList.add('inactive');    
+  }
+
+  function setButtonStateRunning() {
+    start.classList.add('inactive');    
+    stop.classList.remove('inactive');  
+    reset.classList.add('inactive');    
+  }
+
+  function setButtonStateStopped() {
+    start.classList.remove('inactive'); 
+    stop.classList.add('inactive');     
+    reset.classList.remove('inactive'); 
+  }
+
+  setButtonStateInitial()
+
+  
+  start.addEventListener('click', () => {
+    if (start.classList.contains('inactive') === true) {
+      return;
+    }
+   
+    setButtonStateRunning();
+    startTime = Date.now();
+    countUp();
+  });
+
+ 
+  stop.addEventListener('click', () => {
+    if (stop.classList.contains('inactive') === true) {
+      return;
+    }
+    
+    setButtonStateStopped();
+    clearTimeout(timeoutid);
+    elapsedTime += Date.now() - startTime;
+  });
+
+ 
+  reset.addEventListener('click', () => {
+    if (reset.classList.contains('inactive') === true) {
+      return;
+    }
+   
+    setButtonStateInitial()
+    timer.textContent = '00:00.000';
+    elapsedTime = 0;
+  });
+}
+  </script>
+</body>
+</html>
+
+<style>
+    body {
+  font-size: 14px;
+  background-color: rgb(255, 255, 255)
+}
+
+.container {
+  margin: 25px auto;
+  width: 200x;
+  background: #a0a0a0;
+  padding: 30px;
+  text-align: center;
+}
+
+.btn {
+  width: 100px;
+  height: 40px;
+  line-height: 40px;
+  background: rgb(255, 255, 255);
+  font-weight: bold;
+  cursor: pointer;
+  user-select: none;
+}
+
+#timer {
+  background: rgb(255, 255, 255);
+  height: 100px;
+  line-height: 100px;
+  font-size: 50px;
+  margin-bottom: 10px;
+}
+
+.controls {
+  display: flex; 
+  justify-content: space-between;
+}
+
+
+.inactive {
+  opacity: 0.6;
+}
+
